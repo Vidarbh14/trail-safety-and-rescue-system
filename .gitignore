@@ -1,0 +1,22 @@
+# Compiled binaries and object files
+*.exe
+*.out
+*.o
+*.obj
+*.pdb
+*.ilk
+
+# Visual Studio / VS Code
+.vscode/
+.vs/
+*.sln
+*.vcxproj*
+
+# OS specific files
+Thumbs.db
+.DS_Store
+
+# Temporary & build directories
+bin/
+build/
+dist/
