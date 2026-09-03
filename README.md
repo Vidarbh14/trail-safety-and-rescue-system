@@ -95,6 +95,6 @@ Upon launch, the application loads sample demo topology (checkpoints & trails) s
 
 ## 👤 TEAM MEMBER
 * Vidarbh Dabral ML2/67 Semester - 03
-* Shorya Negi DS1/ Semester - 03
-* Arnav Negi Semester - 03
+* Shorya Negi DS1/41 Semester - 03
+* Arnav Negi G/16 Semester - 03
 * Rajat Pant ML5/45 Semester - 03
