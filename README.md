@@ -1,12 +1,12 @@
 # 🏔️ Trail Safety and Rescue System
 
-A modern C++ terminal application designed for national park trails and mountain rescue operations. This project integrates fundamental **Data Structures (Graph via Adjacency List)** and **Object-Oriented Programming (OOP)** principles to manage registered hikers, trail checkpoints, and emergency rescue units.
+A modern C++ terminal application designed for offroad trails and mountain rescue operations. This project integrates fundamental **Data Structures (Graph via Adjacency List)** and **Object-Oriented Programming (OOP)** principles to manage registered hikers, trail checkpoints, and emergency rescue units.
 
 Developed as a **3rd Semester B.Tech CSE Project-Based Learning (PBL)** assignment.
 
 ---
 
-## 📌 Project Overview (Phase 1 Milestone - 25%)
+## Project Overview (Phase 1 Milestone - 25%)
 
 The primary objective of Phase 1 is establishing a clean, robust, and extensible foundational architecture without premature complexity. 
 
