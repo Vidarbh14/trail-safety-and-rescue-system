@@ -93,6 +93,8 @@ Upon launch, the application loads sample demo topology (checkpoints & trails) s
 
 ---
 
-## 👤 Author
-* **Vidarbh Dabral** ([@Vidarbh14](https://github.com/Vidarbh14))
-* 2nd-Year B.Tech Computer Science & Engineering
+## 👤 TEAM MEMBER
+* Vidarbh Dabral ML2/67 Semester - 03
+* Shorya Negi DS1/ Semester - 03
+* Arnav Negi Semester - 03
+* Rajat Pant ML5/45 Semester - 03
