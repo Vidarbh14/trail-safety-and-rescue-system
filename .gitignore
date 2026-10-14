@@ -1,0 +1,15 @@
+# Compiled binaries and build artifacts
+*.exe
+*.out
+*.o
+*.obj
+*.a
+
+# Claude Code local settings (machine-specific, not shared)
+.claude/
+
+# Editor / OS noise
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
