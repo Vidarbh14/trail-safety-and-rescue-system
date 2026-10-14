@@ -169,6 +169,6 @@ The system rejects invalid input rather than corrupting the graph:
 
 ## 👤 TEAM MEMBERS
 * **Vidarbh Dabral** — ML2/67 — Semester 03
-* **Shorya Negi** — DS1/41 — Roll No. 21106 — Semester 03
+* **Shorya Negi** — DS1/41 — Roll No. 221106 — Semester 03
 * **Arnav Negi** — G/16 — Semester 03
 * **Rajat Pant** — ML5/45 — Semester 03
