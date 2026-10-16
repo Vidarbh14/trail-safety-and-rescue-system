@@ -5,11 +5,13 @@
 *.obj
 *.a
 
-# Claude Code local settings (machine-specific, not shared)
-.claude/
-
-# Editor / OS noise
+# IDE and editor settings
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# OS generated files
 Thumbs.db
 desktop.ini
+.DS_Store

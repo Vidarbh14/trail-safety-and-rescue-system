@@ -42,9 +42,6 @@ protected:
 public:
     virtual ~User() = default;
 
-    // NOTE: parameters are named differently from the members on purpose.
-    // Naming them the same ("name") compiles, but shadows the member and is
-    // a classic source of silent bugs.
     User(string id, string personName, string contact)
         : userId(move(id)), name(move(personName)), contactNumber(move(contact)) {}
 
@@ -178,9 +175,7 @@ public:
         }
     }
 
-    // Returns true only if the trail was actually added.
-    // Phase 1 bug fix: this used to return void, so the caller printed
-    // "success" even when the trail had been rejected.
+    // Adds a trail edge between checkpoints. Returns true if added successfully.
     bool addTrail(const string& from, const string& to,
                   double distanceKm, bool bidirectional = true) {
 
@@ -228,8 +223,7 @@ public:
 
     size_t getCheckpointCount() const { return adjList.size(); }
 
-    // Phase 2 needed this: without a way to read a checkpoint's trails,
-    // Dijkstra cannot be written at all.
+    // Returns outgoing trail edges for a given checkpoint
     const vector<TrailEdge>& getNeighbors(const string& checkpoint) const {
         static const vector<TrailEdge> noTrails;   // returned for unknown names
         auto it = adjList.find(checkpoint);
@@ -374,14 +368,13 @@ private:
 public:
     TrailSafetySystem() = default;
 
-    // Copying a system that owns unique_ptrs makes no sense, so we ban it.
+    // Disable copying due to unique_ptr ownership of polymorphic users
     TrailSafetySystem(const TrailSafetySystem&) = delete;
     TrailSafetySystem& operator=(const TrailSafetySystem&) = delete;
 
     // ---------------- HIKER MANAGEMENT  (Arnav) ----------------
 
-    // Linear search by ID. O(n), which is fine for a PBL-sized roster.
-    // dynamic_cast safely converts the base pointer back to a Hiker*.
+    // Linear search by ID; dynamic_cast safely converts the base pointer to Hiker*
     Hiker* findHikerById(const string& id) const {
         for (size_t i = 0; i < registeredUsers.size(); ++i) {
             if (registeredUsers[i]->getId() == id) {
@@ -484,9 +477,7 @@ public:
         rescueTeams.push_back(team);
     }
 
-    // THE Phase 2 headline feature.
-    // Runs Dijkstra once from every AVAILABLE team's base camp to the hiker,
-    // then dispatches whichever team has the shortest trail distance.
+    // Evaluates shortest paths from all available rescue bases and dispatches the closest team
     void dispatchNearestTeam(const string& hikerId) {
         Hiker* hiker = findHikerById(hikerId);
         if (hiker == nullptr) {
@@ -606,8 +597,7 @@ public:
         trailMap.displayMap();
     }
 
-    // Loads a small demo network so an evaluator sees a working system
-    // the moment the program starts.
+    // Pre-populates sample trail network and active units for demonstration
     void seedInitialDemoData() {
         // Dehradun & Mussoorie foothill trail network
         trailMap.addTrail("Old Rajpur", "Shikhar Falls", 3.2);
@@ -621,8 +611,7 @@ public:
         trailMap.addTrail("Hathipaon", "Bhadraj Temple", 8.0);
         trailMap.addTrail("George Everest Peak", "Benog Tibba", 4.2);
 
-        // Deliberately left unconnected, so the "no route exists" branch of
-        // Dijkstra can be demonstrated during evaluation.
+        // Isolated checkpoint to test unreachable route handling
         trailMap.addCheckpoint("Nag Tibba Base");
 
         registerRescueTeam(RescueTeam("RT-SDRF-01", "Inspector Rajesh Rawat", "Old Rajpur"));
@@ -648,9 +637,7 @@ void clearCin() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-// Reads a number greater than 0.
-// Returns false if the input stream closed (EOF), so the caller can stop
-// instead of looping forever.
+// Reads a positive floating-point number with input validation
 bool readPositiveDouble(double& value) {
     while (true) {
         if (cin >> value) {
@@ -690,7 +677,7 @@ int main() {
     cout << "    TRAIL SAFETY & RESCUE MANAGEMENT SYSTEM (PHASE 2)        \n";
     cout << "   B.Tech 3rd Semester PBL - Graph, Dijkstra & OOP           \n";
     cout << "=============================================================\n";
-    cout << "[System]: Demo trail network loaded. Ready for evaluation.\n";
+    cout << "[System]: Demo trail network and rescue units loaded.\n";
 
     int choice = 0;
 
@@ -698,8 +685,7 @@ int main() {
         printMenu();
 
         if (!(cin >> choice)) {
-            // EOF means the input stream is finished (piped input, or Ctrl+Z).
-            // Without this check the program loops forever printing the menu.
+            // Handle stream termination / EOF cleanly
             if (cin.eof()) {
                 cout << "\n[System]: Input closed. Shutting down.\n";
                 return 0;
