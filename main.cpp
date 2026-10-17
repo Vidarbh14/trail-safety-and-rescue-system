@@ -1,13 +1,10 @@
-// =============================================================================
+
 //  TRAIL SAFETY AND RESCUE MANAGEMENT SYSTEM  -  PHASE 2
 //  B.Tech 3rd Semester PBL : Data Structures (Graph) + OOP
 //
 //  Phase 1 : Graph storage (adjacency list) + OOP entity hierarchy
 //  Phase 2 : Dijkstra shortest path + nearest-rescue-team dispatch (SOS)
-//
-//  Build : g++ -std=c++14 -Wall -Wextra main.cpp -o main.exe
-//  Run   : .\main.exe
-// =============================================================================
+
 
 #include <iostream>
 #include <vector>
@@ -26,13 +23,11 @@ using namespace std;
 const double INF = numeric_limits<double>::max();
 
 
-// =============================================================================
-//  SECTION A  -  ENTITY LAYER (OOP)
-//  Owner: ARNAV NEGI
-// =============================================================================
 
-// Abstract Base Class. Cannot be created directly - it only defines the
-// contract that every person in the system must follow.
+//  CODE WRITTEN BY ARNAV NEGI
+
+
+
 class User {
 protected:
     string userId;
@@ -127,10 +122,9 @@ public:
 };
 
 
-// =============================================================================
-//  SECTION B  -  GRAPH + DIJKSTRA
-//  Owner: VIDARBH DABRAL
-// =============================================================================
+// TOPIC   -  GRAPH + DIJKSTRA
+//  VIDHU
+
 
 // One trail leaving a checkpoint: where it goes, and how long it is.
 // This is a single entry inside the adjacency list.
@@ -143,7 +137,6 @@ struct TrailEdge {
 };
 
 
-// What Dijkstra hands back to the caller.
 struct PathResult {
     bool found;              // false if the two checkpoints are not connected
     double totalDistance;    // total km along the shortest route
@@ -160,9 +153,6 @@ using DistNode = pair<double, string>;
 
 class TrailGraph {
 private:
-    // THE core data structure.
-    // key   = checkpoint name
-    // value = list of trails leaving that checkpoint
     unordered_map<string, vector<TrailEdge>> adjList;
 
 public:
@@ -231,15 +221,12 @@ public:
         return it->second;
     }
 
-    // -------------------------------------------------------------------
+    
     //  DIJKSTRA'S SHORTEST PATH ALGORITHM
-    //
-    //  Idea: always expand the closest checkpoint we have not settled yet.
-    //  Because every trail length is positive, the first time we settle a
-    //  checkpoint we already know its true shortest distance.
-    //
+
+    
     //  Complexity: O((V + E) log V)  -- the log V comes from the min-heap.
-    // -------------------------------------------------------------------
+    
     PathResult findShortestPath(const string& source, const string& destination) const {
         PathResult result;
 
@@ -292,7 +279,7 @@ public:
             return result;    // never reached -> no route exists
         }
 
-        // STEP 4 -- walk the 'previous' chain backwards from the destination,
+        // STEP 4 -- walk the previous  chain backwards from the destination,
         // then flip it so it reads in walking order.
         vector<string> route;
         string step = destination;
@@ -339,10 +326,9 @@ public:
 };
 
 
-// =============================================================================
-//  SECTION C  -  SYSTEM FACADE (ties entities + graph together)
-//  Owner: SHORYA NEGI  (rescue dispatch)  +  ARNAV NEGI  (hiker management)
-// =============================================================================
+
+//  Third Part Shorya Negi and Anrav Negi
+
 
 class TrailSafetySystem {
 private:
@@ -372,7 +358,7 @@ public:
     TrailSafetySystem(const TrailSafetySystem&) = delete;
     TrailSafetySystem& operator=(const TrailSafetySystem&) = delete;
 
-    // ---------------- HIKER MANAGEMENT  (Arnav) ----------------
+    // ######HIKER MANAGEMENT  (Arnav) 
 
     // Linear search by ID; dynamic_cast safely converts the base pointer to Hiker*
     Hiker* findHikerById(const string& id) const {
@@ -435,7 +421,7 @@ public:
         cout << "\n[OK] Contact details updated for " << hiker->getName() << ".\n";
     }
 
-    // ---------------- TRAIL MANAGEMENT  (Vidarbh) ----------------
+    // #############TRAIL MANAGEMENT  (Vidhu) 
 
     void addTrailConnection(const string& from, const string& to,
                             double distanceKm, bool bidirectional = true) {
@@ -470,7 +456,7 @@ public:
         displayRoute(route);
     }
 
-    // ---------------- RESCUE DISPATCH  (Shorya) ----------------
+    //  RESCUE DISPATCH  (Shorya)
 
     void registerRescueTeam(const RescueTeam& team) {
         trailMap.addCheckpoint(team.getBaseLocation());
@@ -562,7 +548,7 @@ public:
         cout << "\n[FAILED] No rescue team with ID \"" << teamId << "\".\n";
     }
 
-    // ---------------- REPORTING  (Rajat) ----------------
+    // ###############REPORTING  (Rajat) 
 
     void displaySystemStatus() const {
         cout << "\n=============================================================\n";
@@ -594,6 +580,7 @@ public:
 
         cout << "\n[SECTION 3: TRAIL NETWORK] (Checkpoints: "
              << trailMap.getCheckpointCount() << ")\n";
+
         trailMap.displayMap();
     }
 
@@ -627,10 +614,8 @@ public:
 };
 
 
-// =============================================================================
-//  SECTION D  -  MENU / INPUT HANDLING
-//  Owner: RAJAT PANT
-// =============================================================================
+
+//  SECTION D  -  MENU / Input handling written by Rajat Pant
 
 void clearCin() {
     cin.clear();
