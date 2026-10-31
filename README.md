@@ -1,118 +1,130 @@
-# 🏔️ Trail Safety and Rescue System
+# Trail Safety and Rescue System
 
-A C++ terminal application for offroad trails and mountain rescue operations. It models a trail network as a **weighted graph (adjacency list)** and uses **Dijkstra's algorithm** to find shortest routes and dispatch the nearest available rescue team to a hiker in distress.
+A C++ application for offroad trails and mountain rescue operations. It models a trail network as a weighted graph (adjacency list) and uses Dijkstra's algorithm to find shortest routes and dispatch the nearest available rescue team to a hiker in distress.
 
-Developed as a **3rd Semester B.Tech CSE Project-Based Learning (PBL)** assignment.
+Developed as a 3rd Semester B.Tech CSE Project-Based Learning (PBL) assignment.
 
 ---
 
-## Project Status
+## Project Modules and Ownership
 
-| Phase | Target | Status |
+main.cpp and the codebase are divided into four core sections across team members:
+
+| Section | Contents | Owner |
 |---|---|---|
-| **Phase 1** | Graph storage, OOP hierarchy, facade | ✅ Complete |
-| **Phase 2** | Dijkstra shortest path + SOS rescue dispatch | ✅ Complete |
-| **Phase 3** | File I/O persistence (Save & Load) + Web JSON Export | ✅ Complete |
-| **Phase 4** | Multi-hiker alerts, trail closures, risk scoring | ✅ Complete |
-| **Phase 5** | Automatic Location Tracking & Telemetry Telemetry | ✅ Complete |
-| **Phase 6** | Modularization into `.hpp`/`.cpp` per team member | ✅ Complete |
-| **Phase 7** | Interactive Web Dashboard (`web/index.html`) | ✅ Complete |
+| Section A | Entity layer: User, Hiker, RescueTeam, and custom UserLinkedList | Arnav Negi |
+| Section B | Graph and Dijkstra: TrailEdge, PathResult, TrailGraph, dynamic hazard routing | Vidarbh Dabral |
+| Section C | Facade system: TrailSafetySystem, auto-tracking telemetry, SOS dispatch, file I/O | Shorya Negi |
+| Section D | Menu UI, animated progress bar, input validation, web dashboard, and main driver | Rajat Pant |
 
 ---
 
-## 🏛️ Architecture
+## Architecture and Data Structures
 
 ### 1. Object-Oriented Design (Owner: Arnav Negi)
-* **Abstraction** — `User` is an Abstract Base Class with pure virtual methods (`displayDetails()`, `getRole()`).
-* **Encapsulation** — State is `private`/`protected` and accessed via const-correct getters and validating mutators.
-* **Inheritance** — `Hiker` publicly inherits `User` and adds checkpoint telemetry, trek state, and travel history.
-* **Polymorphism** — Runtime dispatch through base class pointers (`std::vector<std::unique_ptr<User>>`).
-* **RAII** — `std::unique_ptr` ensures leak-free ownership; virtual destructor guarantees clean derived teardown.
+* Abstraction: `User` is an Abstract Base Class with pure virtual methods (`displayDetails()`, `getRole()`).
+* Encapsulation: Member variables are private or protected, accessed through const getters and validating setters.
+* Inheritance: `Hiker` publicly inherits `User` and adds checkpoint telemetry, trek state, and travel history.
+* Polymorphism: Runtime dispatch through base class pointers.
+* RAII: Modern smart pointers (`std::unique_ptr`) guarantee memory safety and clean destruction.
 
-### 2. Data Structure — Graph as Adjacency List (Owner: Vidarbh Dabral)
+### 2. Custom Singly Linked List (Owner: Arnav Negi)
+* `UserLinkedList` stores registered hikers using dynamic heap-allocated `UserNode` pointers.
+* Provides O(1) appending at tail and clean pointer-based traversal.
+
+### 3. Graph as Adjacency List (Owner: Vidarbh Dabral)
 ```cpp
 std::unordered_map<std::string, std::vector<TrailEdge>>
 ```
-* **Why an adjacency list?** Trail networks are **sparse** (|E| ≪ |V|²). Adjacency list costs **O(V + E)** space versus **O(V²)** for an adjacency matrix.
-* **Why `unordered_map`?** Hash indexing provides amortised **O(1)** lookup by readable checkpoint name.
+* Mountain trail networks are sparse (|E| << |V|^2). An adjacency list uses O(V + E) space compared to O(V^2) for an adjacency matrix.
+* Hash indexing gives O(1) average checkpoint lookup using readable checkpoint names.
 
-### 3. Algorithm — Dijkstra's Shortest Path (Owner: Vidarbh Dabral)
-* **Min-heap**: `std::priority_queue<DistNode, vector<DistNode>, greater<DistNode>>` always extracts the closest unsettled checkpoint.
-* **Complexity**: **O((V + E) log V)**.
-* **Dynamic Hazard Bypass**: Automatically avoids `CLOSED` trail edges and warns about `CAUTION` segments.
+### 4. Dijkstra's Shortest Path Algorithm (Owner: Vidarbh Dabral)
+* Implemented in `TrailGraph::findShortestPath()`.
+* Uses a min-heap priority queue (`std::priority_queue<DistNode, vector<DistNode>, greater<DistNode>>`) to process the closest unsettled node first.
+* Time complexity: O((V + E) log V).
+* Dynamic hazard bypass: Automatically detects and avoids `CLOSED` trail edges while flagging `CAUTION` segments.
 
-### 4. System Facade, Tracker & File I/O (Owner: Shorya Negi)
-* Coordinates graph and entities through `TrailSafetySystem`.
-* Implements automated checkpoint tracking and dynamic SOS dispatch to the hiker's latest verified location.
-* Persists data to `trail_safety_data.txt` and exports web-ready JSON to `trail_network.json`.
+### 5. Facade System, Auto-Tracking and File I/O (Owner: Shorya Negi)
+* `TrailSafetySystem` coordinates between the graph, registered hikers, and rescue stations.
+* Automatic Location Tracking: Updates the hiker's checkpoint as they cross sensors along a planned trek.
+* SOS Emergency Dispatch: Dispatches the closest available team to the hiker's latest verified location.
+* File Persistence: Saves and loads system state to `trail_safety_data.txt` and exports web-ready JSON to `trail_network.json`.
 
-### 5. UI, Validation & Progress Bar (Owner: Rajat Pant)
-* Interactive 17-option CLI menu with stream cleansing and numeric validation.
-* Animated ASCII progress bar for live simulation.
+### 6. Interactive Terminal UI and Web Dashboard (Owner: Rajat Pant)
+* Terminal UI with numeric stream cleansing to prevent infinite loops on invalid input.
+* Animated ASCII progress bar for live trail traversal simulation.
+* Interactive web dashboard in `web/index.html` displaying network visualization on an HTML5 canvas.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 .
-├── include/
-│   ├── Common.hpp            # Cross-platform time, sleep & infinity helpers
-│   ├── User.hpp              # Abstract base class & CheckpointCrossing (Arnav Negi)
-│   ├── Hiker.hpp             # Hiker entity & telemetry history (Arnav Negi)
-│   ├── RescueTeam.hpp        # Rescue unit entity & dispatch status (Arnav Negi)
-│   ├── UserLinkedList.hpp    # Custom Singly Linked List Data Structure (Arnav Negi)
-│   ├── TrailGraph.hpp        # Adjacency list & Dijkstra header (Vidarbh Dabral)
-│   ├── TrailSafetySystem.hpp # Facade system & auto-tracker (Shorya Negi)
-│   └── UI.hpp                # Progress bar & terminal menu (Rajat Pant)
-├── src/
-│   ├── TrailGraph.cpp        # Graph algorithms & hazard bypass (Vidarbh Dabral)
-│   ├── TrailSafetySystem.cpp # System implementation, I/O & SOS (Shorya Negi)
-│   └── UI.cpp                # UI functions & validation (Rajat Pant)
-├── web/
-│   └── index.html            # Interactive visual web dashboard (HTML5 Canvas + JS)
-├── main.cpp                  # Modular application entry point
-├── build.bat                 # 1-click Windows build script
-├── run_demo.bat              # 1-click automated viva test demo
-├── trail_network.json        # Web dashboard network data
-└── trail_safety_data.txt     # System state persistence file
+|-- include/
+|   |-- Common.hpp            # Time, sleep and infinity definitions
+|   |-- User.hpp              # Abstract base class
+|   |-- Hiker.hpp             # Hiker entity and telemetry history
+|   |-- RescueTeam.hpp        # Rescue unit entity and dispatch status
+|   |-- UserLinkedList.hpp    # Custom Singly Linked List data structure
+|   |-- TrailGraph.hpp        # Adjacency list and Dijkstra header
+|   |-- TrailSafetySystem.hpp # Facade system and auto-tracker
+|   `-- UI.hpp                # Progress bar and terminal menu declarations
+|-- src/
+|   |-- TrailGraph.cpp        # Graph algorithms and hazard bypass
+|   |-- TrailSafetySystem.cpp # System implementation, I/O and SOS
+|   `-- UI.cpp                # UI functions and validation
+|-- web/
+|   `-- index.html            # Interactive visual web dashboard (Canvas + JS)
+|-- main.cpp                  # Application entry point
+|-- build.bat                 # Windows build script
+|-- Makefile                  # GCC build script
+|-- trail_network.json        # Web dashboard network data
+|-- trail_safety_data.txt     # System state persistence file
+|-- .gitignore                # Build artifact exclusions
+`-- README.md                 # Project documentation
 ```
 
 ---
 
-## 🚀 Getting Started
+## How to Build and Run
 
 ### Prerequisites
-A C++ compiler supporting C++14 or newer (GCC/MinGW `g++`, Clang, or MSVC).
+A C++ compiler supporting C++14 or newer (MinGW g++, GCC, or Clang).
 
 ### Compile
+On Windows:
 ```bash
-# Using build script (Windows)
 .\build.bat
+```
 
-# Or manual compilation with g++:
+Or using g++ directly:
+```bash
 g++ -std=c++14 -Wall -Wextra -Iinclude src/*.cpp main.cpp -o main.exe
 ```
 
-### Run
+Using make:
 ```bash
-# Terminal Application
-.\main.exe
-
-# Or Automated Demo
-.\run_demo.bat
-
-# Web Dashboard (open in any browser)
-start web\index.html
+make
 ```
+
+### Run
+Terminal application:
+```bash
+# Windows
+.\main.exe
 
 # Linux / macOS
 ./main.exe
 ```
 
+Web Dashboard:
+Open `web/index.html` in any web browser.
+
 ---
 
-## 🖥️ Interactive System Menu
+## Interactive Menu
 
 ```text
 ============================= MAIN MENU =============================
@@ -145,44 +157,37 @@ start web\index.html
 
 ---
 
-## 🗺️ Demo Trail Network
+## Demo Trail Network
 
-Loaded automatically at startup (Dehradun–Mussoorie foothills):
+Pre-loaded network (Dehradun - Mussoorie foothills):
 
 ```text
-Old Rajpur ──3.2── Shikhar Falls
-Old Rajpur ──6.5── Jharipani ──5.5── Mussoorie Library Chowk
-Old Rajpur ──6.0── Robber's Cave ──5.5── Kimadi Village
-Kimadi Village ──6.2── Hathipaon
-Mussoorie Library Chowk ──4.0── Hathipaon
-Hathipaon ──2.5── George Everest Peak ──4.2── Benog Tibba
-Hathipaon ──8.0── Bhadraj Temple
+Old Rajpur -- 3.2 km -- Shikhar Falls
+Old Rajpur -- 6.5 km -- Jharipani -- 5.5 km -- Mussoorie Library Chowk
+Old Rajpur -- 6.0 km -- Robber's Cave -- 5.5 km -- Kimadi Village
+Kimadi Village -- 6.2 km -- Hathipaon
+Mussoorie Library Chowk -- 4.0 km -- Hathipaon
+Hathipaon -- 2.5 km -- George Everest Peak -- 4.2 km -- Benog Tibba
+Hathipaon -- 8.0 km -- Bhadraj Temple
 
-Nag Tibba Base  (intentionally isolated - demonstrates the "no route" case)
+Nag Tibba Base (isolated node - demonstrates unreachable destination)
 ```
 
 ---
 
-## ✅ Validation & Test Cases
+## Validation and Edge Cases Handled
 
-The system rejects invalid input rather than corrupting the graph:
-
-| Test | Input | Expected result |
-|------|-------|-----------------|
-| Shortest path | `Old Rajpur` → `Benog Tibba` | 22.70 km, 6 checkpoints |
-| Unreachable node | `Old Rajpur` → `Nag Tibba Base` | "No trail connects…" |
-| Nearest-team dispatch | SOS for `H-101` | Selects `RT-QRT-02` (2.50 km) |
-| Duplicate trail | `Old Rajpur` → `Shikhar Falls` again | Rejected, graph unchanged |
-| Self-loop | `Hathipaon` → `Hathipaon` | Rejected |
-| Blank checkpoint name | *(empty)* → *(empty)* | Rejected |
-| Duplicate hiker ID | Register `H-101` twice | Rejected |
-| Unknown hiker | SOS for `H-999` | "No hiker found" |
-| Stream closed (EOF) | Piped input ends early | Clean shutdown, no infinite loop |
+* Unreachable node: Handled cleanly when no path connects start and destination.
+* Duplicate trail / self-loop: Rejected without modifying the graph.
+* Blank input: Checkpoint names and hiker details cannot be blank.
+* Duplicate hiker ID: Rejected before insertion into the linked list.
+* Stream closed / EOF: Handled cleanly without infinite loops.
 
 ---
 
-## 👤 TEAM MEMBERS
-* **Vidarbh Dabral** — ML2/67 — Semester 03
-* **Shorya Negi** — DS1/41 — Roll No. 221106 — Semester 03
-* **Arnav Negi** — G/16 — Semester 03
-* **Rajat Pant** — ML5/45 — Semester 03
+## Team Members
+
+* Vidarbh Dabral - ML2/67 - Semester 03
+* Shorya Negi - DS1/41 - Roll No. 221106 - Semester 03
+* Arnav Negi - G/16 - Semester 03
+* Rajat Pant - ML5/45 - Semester 03
