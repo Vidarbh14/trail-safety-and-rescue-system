@@ -9,63 +9,46 @@ Developed as a **3rd Semester B.Tech CSE Project-Based Learning (PBL)** assignme
 ## Project Status
 
 | Phase | Target | Status |
-|-------|--------|--------|
+|---|---|---|
 | **Phase 1** | Graph storage, OOP hierarchy, facade | ✅ Complete |
 | **Phase 2** | Dijkstra shortest path + SOS rescue dispatch | ✅ Complete |
-| Phase 3 | File I/O persistence (CSV/JSON save & load) | ⬜ Planned |
-| Phase 4 | Multi-hiker alerts, trail closures, risk scoring | ⬜ Planned |
+| **Phase 3** | File I/O persistence (Save & Load) + Web JSON Export | ✅ Complete |
+| **Phase 4** | Multi-hiker alerts, trail closures, risk scoring | ✅ Complete |
+| **Phase 5** | Automatic Location Tracking & Telemetry Telemetry | ✅ Complete |
+| **Phase 6** | Modularization into `.hpp`/`.cpp` per team member | ✅ Complete |
+| **Phase 7** | Interactive Web Dashboard (`web/index.html`) | ✅ Complete |
 
 ---
 
 ## 🏛️ Architecture
 
-### 1. Object-Oriented Design
+### 1. Object-Oriented Design (Owner: Arnav Negi)
+* **Abstraction** — `User` is an Abstract Base Class with pure virtual methods (`displayDetails()`, `getRole()`).
+* **Encapsulation** — State is `private`/`protected` and accessed via const-correct getters and validating mutators.
+* **Inheritance** — `Hiker` publicly inherits `User` and adds checkpoint telemetry, trek state, and travel history.
+* **Polymorphism** — Runtime dispatch through base class pointers (`std::vector<std::unique_ptr<User>>`).
+* **RAII** — `std::unique_ptr` ensures leak-free ownership; virtual destructor guarantees clean derived teardown.
 
-* **Abstraction** — `User` is an Abstract Base Class with pure virtual methods (`displayDetails()`, `getRole()`), defining the contract for every participant.
-* **Encapsulation** — Internal state is `private`/`protected` and reached only through const-correct getters and *validating* mutators (blank values are rejected, not stored).
-* **Inheritance** — `Hiker` publicly inherits `User` (an *is-a* relationship) and adds emergency telemetry.
-* **Polymorphism** — Runtime dispatch via virtual functions over `std::vector<std::unique_ptr<User>>`.
-* **RAII** — `std::unique_ptr` guarantees leak-free ownership; a virtual destructor ensures derived objects tear down correctly through base pointers.
-* **Facade** — `TrailSafetySystem` is the single entry point coordinating entities and the graph.
-
-### 2. Data Structure — Graph as Adjacency List
-
-```
+### 2. Data Structure — Graph as Adjacency List (Owner: Vidarbh Dabral)
+```cpp
 std::unordered_map<std::string, std::vector<TrailEdge>>
 ```
+* **Why an adjacency list?** Trail networks are **sparse** (|E| ≪ |V|²). Adjacency list costs **O(V + E)** space versus **O(V²)** for an adjacency matrix.
+* **Why `unordered_map`?** Hash indexing provides amortised **O(1)** lookup by readable checkpoint name.
 
-* **Why an adjacency list?** Trail networks are **sparse** (|E| ≪ |V|²). An adjacency list costs **O(V + E)** memory versus **O(V²)** for a matrix.
-* **Why `unordered_map`?** Hash indexing gives **amortised O(1)** checkpoint lookup using readable string names rather than integer indices.
+### 3. Algorithm — Dijkstra's Shortest Path (Owner: Vidarbh Dabral)
+* **Min-heap**: `std::priority_queue<DistNode, vector<DistNode>, greater<DistNode>>` always extracts the closest unsettled checkpoint.
+* **Complexity**: **O((V + E) log V)**.
+* **Dynamic Hazard Bypass**: Automatically avoids `CLOSED` trail edges and warns about `CAUTION` segments.
 
-### 3. Algorithm — Dijkstra's Shortest Path
+### 4. System Facade, Tracker & File I/O (Owner: Shorya Negi)
+* Coordinates graph and entities through `TrailSafetySystem`.
+* Implements automated checkpoint tracking and dynamic SOS dispatch to the hiker's latest verified location.
+* Persists data to `trail_safety_data.txt` and exports web-ready JSON to `trail_network.json`.
 
-Implemented in `TrailGraph::findShortestPath()`.
-
-* **Min-heap:** `std::priority_queue<DistNode, vector<DistNode>, greater<DistNode>>` always yields the nearest unsettled checkpoint.
-* **Complexity:** **O((V + E) log V)**.
-* **Why Dijkstra and not BFS?** BFS minimises the *number of checkpoints*, not distance. The shortest *hop count* is often the longer *walk* — on this map, the 3-hop route to Benog Tibba is 24.4 km while the 5-hop route is 22.7 km.
-* **Why not Bellman–Ford?** All trail distances are positive, so negative-weight handling is unnecessary and would cost O(V·E).
-* **Lazy deletion:** A checkpoint may enter the heap several times; a `settled` map ensures only the first (smallest) pop is processed.
-* **Path reconstruction:** A `previous` map records how each checkpoint was reached; the chain is walked backwards from the destination and reversed.
-
----
-
-## 🚑 Phase 2 Feature — SOS Dispatch
-
-`dispatchNearestTeam(hikerId)` runs Dijkstra **once per available rescue team**, from each team's base camp to the hiker's current checkpoint, then commits whichever team is closest by actual trail distance and marks it unavailable.
-
-Live example from the demo data — hiker `H-101` at *George Everest Peak*:
-
-```
-    - RT-SDRF-01 : 18.50 km away
-    - RT-QRT-02 : 2.50 km away
--------------------------------------------------------------
-  >>> DISPATCHING RT-QRT-02 <<<
-  Led by : Officer Sunita Thapa
-  From   : Hathipaon
-  Route   : Hathipaon -> George Everest Peak
-  Distance: 2.50 km
-```
+### 5. UI, Validation & Progress Bar (Owner: Rajat Pant)
+* Interactive 17-option CLI menu with stream cleansing and numeric validation.
+* Animated ASCII progress bar for live simulation.
 
 ---
 
@@ -73,19 +56,27 @@ Live example from the demo data — hiker `H-101` at *George Everest Peak*:
 
 ```text
 .
-├── .gitignore    # Ignores build artifacts (*.exe, *.o)
-├── README.md     # This file
-└── main.cpp      # Complete implementation, divided into owned sections A–D
+├── include/
+│   ├── Common.hpp            # Cross-platform time, sleep & infinity helpers
+│   ├── User.hpp              # Abstract base class & CheckpointCrossing (Arnav Negi)
+│   ├── Hiker.hpp             # Hiker entity & telemetry history (Arnav Negi)
+│   ├── RescueTeam.hpp        # Rescue unit entity & dispatch status (Arnav Negi)
+│   ├── UserLinkedList.hpp    # Custom Singly Linked List Data Structure (Arnav Negi)
+│   ├── TrailGraph.hpp        # Adjacency list & Dijkstra header (Vidarbh Dabral)
+│   ├── TrailSafetySystem.hpp # Facade system & auto-tracker (Shorya Negi)
+│   └── UI.hpp                # Progress bar & terminal menu (Rajat Pant)
+├── src/
+│   ├── TrailGraph.cpp        # Graph algorithms & hazard bypass (Vidarbh Dabral)
+│   ├── TrailSafetySystem.cpp # System implementation, I/O & SOS (Shorya Negi)
+│   └── UI.cpp                # UI functions & validation (Rajat Pant)
+├── web/
+│   └── index.html            # Interactive visual web dashboard (HTML5 Canvas + JS)
+├── main.cpp                  # Modular application entry point
+├── build.bat                 # 1-click Windows build script
+├── run_demo.bat              # 1-click automated viva test demo
+├── trail_network.json        # Web dashboard network data
+└── trail_safety_data.txt     # System state persistence file
 ```
-
-`main.cpp` is split into four clearly banded sections so each team member edits a separate region of the file:
-
-| Section | Contents | Owner |
-|---------|----------|-------|
-| **A** | Entity layer — `User`, `Hiker`, `RescueTeam` | Arnav Negi |
-| **B** | Graph + Dijkstra — `TrailEdge`, `PathResult`, `TrailGraph` | Vidarbh Dabral |
-| **C** | Facade — `TrailSafetySystem` (dispatch + hiker management) | Shorya Negi / Arnav Negi |
-| **D** | Menu, input validation, `main()` | Rajat Pant |
 
 ---
 
@@ -96,14 +87,24 @@ A C++ compiler supporting C++14 or newer (GCC/MinGW `g++`, Clang, or MSVC).
 
 ### Compile
 ```bash
-g++ -std=c++14 -Wall -Wextra main.cpp -o main.exe
+# Using build script (Windows)
+.\build.bat
+
+# Or manual compilation with g++:
+g++ -std=c++14 -Wall -Wextra -Iinclude src/*.cpp main.cpp -o main.exe
 ```
-The project compiles with **zero warnings** under `-Wall -Wextra -Wshadow -pedantic`.
 
 ### Run
 ```bash
-# Windows
+# Terminal Application
 .\main.exe
+
+# Or Automated Demo
+.\run_demo.bat
+
+# Web Dashboard (open in any browser)
+start web\index.html
+```
 
 # Linux / macOS
 ./main.exe
@@ -111,22 +112,35 @@ The project compiles with **zero warnings** under `-Wall -Wextra -Wshadow -pedan
 
 ---
 
-## 🖥️ Menu
+## 🖥️ Interactive System Menu
 
 ```text
-======================== MAIN MENU ========================
-  --- Phase 1 : Setup ---
-  1. Register a Hiker
-  2. Add a Trail to the Map (Graph Edge)
-  3. View Full System Status
-  --- Phase 2 : Routing & Rescue ---
-  4. Find Shortest Route Between Checkpoints (Dijkstra)
-  5. Update a Hiker's Current Location
-  6. Update a Hiker's Contact Details
-  7. SOS - Dispatch Nearest Rescue Team
-  8. Recall a Rescue Team to Base
-  9. Exit
-===========================================================
+============================= MAIN MENU =============================
+  --- [Setup & Records] ---
+  1.  Register a Hiker
+  2.  Add a Trail Connection (Graph Edge)
+  3.  View Full System Status (Hikers, Units, Network Map)
+
+  --- [Navigation & Tracking] ---
+  4.  Find Shortest Route (Dijkstra Algorithm)
+  5.  Manual Hiker Location Update (Direct Check-in)
+  6.  Plan & Start Hiker Trek (Route Assignment)
+  7.  Simulate Auto Location Tracking (Live Checkpoint Crossings)
+  8.  Ping Next Checkpoint Crossing (Single Sensor Event)
+  9.  View Hiker Checkpoint Crossing Log & Travel History
+
+  --- [Safety, Hazards & SOS] ---
+  10. SOS - Dispatch Nearest Rescue Team
+  11. Recall a Rescue Team to Base
+  12. Trail Closure & Hazard Condition Management
+  13. Broadcast Emergency Safety Alert to All Hikers
+
+  --- [Persistence & Web Export] ---
+  14. Save System State to Disk
+  15. Load System State from Disk
+  16. Export State to JSON (For Website Dashboard)
+  17. Exit System
+=====================================================================
 ```
 
 ---
