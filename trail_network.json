@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-10-29 19:19:06",
+  "trails": [
+    {
+      "from": "Jharipani",
+      "to": "Old Rajpur",
+      "distanceKm": 6.5,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Jharipani",
+      "to": "Mussoorie Library Chowk",
+      "distanceKm": 5.5,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Hathipaon",
+      "to": "Kimadi Village",
+      "distanceKm": 6.2,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Hathipaon",
+      "to": "Mussoorie Library Chowk",
+      "distanceKm": 4,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Old Rajpur",
+      "to": "Shikhar Falls",
+      "distanceKm": 3.2,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Old Rajpur",
+      "to": "Robber's Cave",
+      "distanceKm": 6,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Kimadi Village",
+      "to": "Robber's Cave",
+      "distanceKm": 5.5,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Benog Tibba",
+      "to": "George Everest Peak",
+      "distanceKm": 4.2,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "George Everest Peak",
+      "to": "Hathipaon",
+      "distanceKm": 2.5,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    },
+    {
+      "from": "Bhadraj Temple",
+      "to": "Hathipaon",
+      "distanceKm": 8,
+      "status": "OPEN",
+      "hazard": "Clear trail"
+    }
+  ],
+  "hikers": [
+    {
+      "id": "H-101",
+      "name": "Aarav Sharma",
+      "contact": "+91-98765-43210",
+      "currentCheckpoint": "George Everest Peak",
+      "isTrekActive": false,
+      "totalDistanceKm": 0
+    },
+    {
+      "id": "H-102",
+      "name": "Meera Joshi",
+      "contact": "+91-91234-56780",
+      "currentCheckpoint": "Mussoorie Library Chowk",
+      "isTrekActive": false,
+      "totalDistanceKm": 12
+    }
+  ],
+  "rescueTeams": [
+    {
+      "id": "RT-SDRF-01",
+      "leader": "Inspector Rajesh Rawat",
+      "base": "Old Rajpur",
+      "isAvailable": true
+    },
+    {
+      "id": "RT-QRT-02",
+      "leader": "Officer Sunita Thapa",
+      "base": "Hathipaon",
+      "isAvailable": false
+    }
+  ]
+}

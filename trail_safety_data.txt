@@ -1,0 +1,18 @@
+# TRAIL_SAFETY_PERSISTENCE_V1
+[TRAILS]
+Jharipani|Old Rajpur|6.5|0|Clear trail|1
+Jharipani|Mussoorie Library Chowk|5.5|0|Clear trail|1
+Hathipaon|Kimadi Village|6.2|0|Clear trail|1
+Hathipaon|Mussoorie Library Chowk|4|0|Clear trail|1
+Old Rajpur|Shikhar Falls|3.2|0|Clear trail|1
+Old Rajpur|Robber's Cave|6|0|Clear trail|1
+Kimadi Village|Robber's Cave|5.5|0|Clear trail|1
+Benog Tibba|George Everest Peak|4.2|0|Clear trail|1
+George Everest Peak|Hathipaon|2.5|0|Clear trail|1
+Bhadraj Temple|Hathipaon|8|0|Clear trail|1
+[HIKERS]
+H-101|Aarav Sharma|+91-98765-43210|+91-98765-99887|George Everest Peak|Asthma inhaler in backpack
+H-102|Meera Joshi|+91-91234-56780|+91-91234-11223|Mussoorie Library Chowk|First aid kit equipped
+[RESCUE_TEAMS]
+RT-SDRF-01|Inspector Rajesh Rawat|Old Rajpur|1
+RT-QRT-02|Officer Sunita Thapa|Hathipaon|0
