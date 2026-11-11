@@ -302,7 +302,7 @@ void TrailSafetySystem::broadcastEmergencyAlert(const string& message) const {
 
 void TrailSafetySystem::registerRescueTeam(const RescueTeam& team) {
     trailMap.addCheckpoint(team.getBaseLocation());
-    rescueTeams.push_back(team);
+    rescueTeams.append(team);
 }
 
 void TrailSafetySystem::dispatchNearestTeam(const string& hikerId) {
@@ -323,69 +323,72 @@ void TrailSafetySystem::dispatchNearestTeam(const string& hikerId) {
     cout << "  Medical Profile   : " << hiker->getMedicalNotes() << "\n";
     cout << "-------------------------------------------------------------\n";
 
-    int bestTeamIndex = -1;
+    RescueTeam* bestTeam = nullptr;
     double bestDistance = INF;
     PathResult bestRoute;
 
     cout << "  Evaluating available rescue units via Dijkstra...\n\n";
 
-    for (size_t i = 0; i < rescueTeams.size(); ++i) {
-        if (!rescueTeams[i].getAvailability()) {
-            cout << "    - " << rescueTeams[i].getTeamId() << " : unavailable (on active mission)\n";
+    RescueTeamNode* rNode = rescueTeams.getHead();
+    while (rNode) {
+        RescueTeam& team = rNode->team;
+        if (!team.getAvailability()) {
+            cout << "    - " << team.getTeamId() << " : unavailable (on active mission)\n";
+            rNode = rNode->next;
             continue;
         }
 
         PathResult route = trailMap.findShortestPath(
-            rescueTeams[i].getBaseLocation(), hikerLocation, true);
+            team.getBaseLocation(), hikerLocation, true);
 
         if (!route.found) {
-            cout << "    - " << rescueTeams[i].getTeamId()
-                 << " : no open trail from base camp " << rescueTeams[i].getBaseLocation() << "\n";
+            cout << "    - " << team.getTeamId()
+                 << " : no open trail from base camp " << team.getBaseLocation() << "\n";
+            rNode = rNode->next;
             continue;
         }
 
-        cout << "    - " << rescueTeams[i].getTeamId() << " ("
-                 << rescueTeams[i].getBaseLocation() << ") : "
-                 << fixed << setprecision(2) << route.totalDistance << " km away\n";
+        cout << "    - " << team.getTeamId() << " ("
+             << team.getBaseLocation() << ") : "
+             << fixed << setprecision(2) << route.totalDistance << " km away\n";
         cout.unsetf(ios::fixed);
 
-        if (bestTeamIndex == -1 || route.totalDistance < bestDistance) {
-            bestTeamIndex = static_cast<int>(i);
+        if (!bestTeam || route.totalDistance < bestDistance) {
+            bestTeam = &team;
             bestDistance = route.totalDistance;
             bestRoute = route;
         }
+        rNode = rNode->next;
     }
 
     cout << "-------------------------------------------------------------\n";
 
-    if (bestTeamIndex == -1) {
+    if (!bestTeam) {
         cout << "  [!] NO RESCUE TEAM CAN BE DISPATCHED.\n";
         cout << "  All teams busy or trails impassable.\n";
         return;
     }
 
-    RescueTeam& chosen = rescueTeams[bestTeamIndex];
-    chosen.setAvailability(false, "SOS mission for " + hiker->getName());
+    bestTeam->setAvailability(false, "SOS mission for " + hiker->getName());
 
-    cout << "  >>> DISPATCHING UNIT: " << chosen.getTeamId() << " <<<\n";
-    cout << "  Commander : " << chosen.getLeader() << "\n";
-    cout << "  Base Camp : " << chosen.getBaseLocation() << "\n";
+    cout << "  >>> DISPATCHING UNIT: " << bestTeam->getTeamId() << " <<<\n";
+    cout << "  Commander : " << bestTeam->getLeader() << "\n";
+    cout << "  Base Camp : " << bestTeam->getBaseLocation() << "\n";
     cout << "  Target    : " << hikerLocation << "\n\n";
     displayRoute(bestRoute);
     cout << "=============================================================\n";
 }
 
 void TrailSafetySystem::recallTeam(const string& teamId) {
-    for (auto& team : rescueTeams) {
-        if (team.getTeamId() == teamId) {
-            if (team.getAvailability()) {
-                cout << "\n[INFO] " << teamId << " is already stationed at base camp.\n";
-            } else {
-                team.setAvailability(true, "On Patrol / Standby");
-                cout << "\n[OK] " << teamId << " has returned to base and is available again.\n";
-            }
-            return;
+    RescueTeam* team = rescueTeams.findTeamById(teamId);
+    if (team) {
+        if (team->getAvailability()) {
+            cout << "\n[INFO] " << teamId << " is already stationed at base camp.\n";
+        } else {
+            team->setAvailability(true, "On Patrol / Standby");
+            cout << "\n[OK] " << teamId << " has returned to base and is available again.\n";
         }
+        return;
     }
     cout << "\n[FAILED] No rescue team with ID \"" << teamId << "\".\n";
 }
@@ -426,9 +429,11 @@ bool TrailSafetySystem::saveSystemState(const string& filename) const {
     }
 
     outFile << "[RESCUE_TEAMS]\n";
-    for (const auto& team : rescueTeams) {
-        outFile << team.getTeamId() << "|" << team.getLeader() << "|"
-                << team.getBaseLocation() << "|" << (team.getAvailability() ? 1 : 0) << "\n";
+    RescueTeamNode* rNode = rescueTeams.getHead();
+    while (rNode) {
+        outFile << rNode->team.getTeamId() << "|" << rNode->team.getLeader() << "|"
+                << rNode->team.getBaseLocation() << "|" << (rNode->team.getAvailability() ? 1 : 0) << "\n";
+        rNode = rNode->next;
     }
 
     outFile.close();
@@ -541,15 +546,20 @@ bool TrailSafetySystem::exportStateToJson(const string& filename) const {
     jsonFile << "\n  ],\n";
 
     jsonFile << "  \"rescueTeams\": [\n";
-    for (size_t i = 0; i < rescueTeams.size(); ++i) {
+    RescueTeamNode* rNode = rescueTeams.getHead();
+    bool firstTeam = true;
+    while (rNode) {
+        if (!firstTeam) jsonFile << ",\n";
         jsonFile << "    {\n"
-                 << "      \"id\": \"" << rescueTeams[i].getTeamId() << "\",\n"
-                 << "      \"leader\": \"" << rescueTeams[i].getLeader() << "\",\n"
-                 << "      \"base\": \"" << rescueTeams[i].getBaseLocation() << "\",\n"
-                 << "      \"isAvailable\": " << (rescueTeams[i].getAvailability() ? "true" : "false") << "\n"
-                 << "    }" << (i + 1 < rescueTeams.size() ? "," : "") << "\n";
+                 << "      \"id\": \"" << rNode->team.getTeamId() << "\",\n"
+                 << "      \"leader\": \"" << rNode->team.getLeader() << "\",\n"
+                 << "      \"base\": \"" << rNode->team.getBaseLocation() << "\",\n"
+                 << "      \"isAvailable\": " << (rNode->team.getAvailability() ? "true" : "false") << "\n"
+                 << "    }";
+        firstTeam = false;
+        rNode = rNode->next;
     }
-    jsonFile << "  ]\n";
+    jsonFile << "\n  ]\n";
     jsonFile << "}\n";
 
     jsonFile.close();
@@ -576,13 +586,17 @@ void TrailSafetySystem::displaySystemStatus() const {
         }
     }
 
-    cout << "\n[SECTION 2: RESCUE & RANGER STATIONS] (Total: " << rescueTeams.size() << ")\n";
+    cout << "\n[SECTION 2: RESCUE & RANGER STATIONS (CUSTOM LINKED LIST)] (Total: "
+         << rescueTeams.size() << ")\n";
     if (rescueTeams.empty()) {
         cout << "  No rescue teams on duty.\n";
     } else {
-        for (size_t i = 0; i < rescueTeams.size(); ++i) {
-            cout << "\n-- Response Unit #" << (i + 1) << " --\n";
-            rescueTeams[i].displayTeam();
+        RescueTeamNode* rCurr = rescueTeams.getHead();
+        size_t unitNum = 1;
+        while (rCurr) {
+            cout << "\n-- Linked List Node #" << unitNum++ << " --\n";
+            rCurr->team.displayTeam();
+            rCurr = rCurr->next;
         }
     }
 

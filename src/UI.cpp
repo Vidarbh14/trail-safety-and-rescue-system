@@ -62,11 +62,7 @@ void printMenu() {
     cout << "  11. Recall a Rescue Team to Base\n";
     cout << "  12. Trail Closure & Hazard Condition Management\n";
     cout << "  13. Broadcast Emergency Safety Alert to All Hikers\n";
-    cout << "\n  --- [Persistence & Web Export] ---\n";
-    cout << "  14. Save System State to Disk\n";
-    cout << "  15. Load System State from Disk\n";
-    cout << "  16. Export State to JSON (For Website Dashboard)\n";
-    cout << "  17. Exit System\n";
+    cout << "\n  14. Exit System\n";
     cout << "=====================================================================\n";
-    cout << "Enter selection (1-17): ";
+    cout << "Enter selection (1-14): ";
 }

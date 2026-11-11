@@ -5,7 +5,7 @@
 //  TEAM MEMBERS & ARCHITECTURAL OWNERSHIP:
 //    - Arnav Negi    (Roll No. G/16)   : Section A - OOP Hierarchy & Hiker Telemetry
 //    - Vidarbh Dabral(Roll No. ML2/67) : Section B - Graph Data Structure & Dijkstra
-//    - Shorya Negi   (Roll No. 221106) : Section C - Facade System, Tracker & File I/O
+//    - Shorya Negi   (Roll No. 221106) : Section C - Facade System, SOS Dispatch & Tracker
 //    - Rajat Pant    (Roll No. ML5/45) : Section D - Terminal UI, Progress Bar & Driver
 //
 //  BUILD COMMAND:
@@ -39,7 +39,7 @@ int main() {
                 cout << "\n[System]: Stream closed. Exiting safely.\n";
                 return 0;
             }
-            cout << "\n[!] Invalid input. Please enter a number between 1 and 17.\n";
+            cout << "\n[!] Invalid input. Please enter a number between 1 and 14.\n";
             clearCin();
             continue;
         }
@@ -85,21 +85,21 @@ int main() {
                 break;
             }
 
-            case 4: { // Dijkstra Route Finding
+            case 4: { // Find Shortest Route (Dijkstra)
                 string from, to;
-                cout << "\n--- FIND SHORTEST ROUTE (DIJKSTRA) ---\n";
-                cout << "Start Checkpoint           : "; getline(cin, from);
-                cout << "Destination Checkpoint     : "; getline(cin, to);
+                cout << "\n--- FIND SHORTEST TRAIL ROUTE (DIJKSTRA) ---\n";
+                cout << "Starting Checkpoint        : "; getline(cin, from);
+                cout << "Target Destination         : "; getline(cin, to);
                 safetySystem.findRouteBetween(from, to);
                 break;
             }
 
-            case 5: { // Direct Manual Location Update
-                string id, checkpoint;
-                cout << "\n--- MANUAL LOCATION UPDATE ---\n";
+            case 5: { // Direct Location Update
+                string id, loc;
+                cout << "\n--- MANUAL LOCATION UPDATE (DIRECT CHECK-IN) ---\n";
                 cout << "Hiker ID                   : "; getline(cin, id);
-                cout << "New Checkpoint Name        : "; getline(cin, checkpoint);
-                safetySystem.updateHikerLocation(id, checkpoint);
+                cout << "New Checkpoint Location    : "; getline(cin, loc);
+                safetySystem.updateHikerLocation(id, loc);
                 break;
             }
 
@@ -188,40 +188,13 @@ int main() {
                 break;
             }
 
-            case 14: { // Save to Disk
-                string fname;
-                cout << "\n--- SAVE SYSTEM STATE TO FILE ---\n";
-                cout << "Enter filename (default: trail_safety_data.txt): "; getline(cin, fname);
-                if (fname.empty()) fname = "trail_safety_data.txt";
-                safetySystem.saveSystemState(fname);
-                break;
-            }
-
-            case 15: { // Load from Disk
-                string fname;
-                cout << "\n--- LOAD SYSTEM STATE FROM FILE ---\n";
-                cout << "Enter filename (default: trail_safety_data.txt): "; getline(cin, fname);
-                if (fname.empty()) fname = "trail_safety_data.txt";
-                safetySystem.loadSystemState(fname);
-                break;
-            }
-
-            case 16: { // Export to JSON
-                string fname;
-                cout << "\n--- EXPORT SYSTEM FOR WEB DASHBOARD ---\n";
-                cout << "Enter JSON filename (default: trail_network.json): "; getline(cin, fname);
-                if (fname.empty()) fname = "trail_network.json";
-                safetySystem.exportStateToJson(fname);
-                break;
-            }
-
-            case 17: { // Exit
+            case 14: { // Exit
                 cout << "\nExiting Mountain Trail Safety & Rescue System. Safe journey!\n";
                 return 0;
             }
 
             default:
-                cout << "\n[!] Selection out of range. Please choose between 1 and 17.\n";
+                cout << "\n[!] Selection out of range. Please choose between 1 and 14.\n";
                 break;
         }
     }

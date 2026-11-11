@@ -12,9 +12,9 @@ main.cpp and the codebase are divided into four core sections across team member
 
 | Section | Contents | Owner |
 |---|---|---|
-| Section A | Entity layer: User, Hiker, RescueTeam, and custom UserLinkedList | Arnav Negi |
+| Section A | Entity layer: User, Hiker, RescueTeam, UserLinkedList, RescueTeamLinkedList | Arnav Negi |
 | Section B | Graph and Dijkstra: TrailEdge, PathResult, TrailGraph, dynamic hazard routing | Vidarbh Dabral |
-| Section C | Facade system: TrailSafetySystem, auto-tracking telemetry, SOS dispatch, file I/O | Shorya Negi |
+| Section C | Facade system: TrailSafetySystem, auto-tracking telemetry, SOS dispatch | Shorya Negi |
 | Section D | Menu UI, animated progress bar, input validation, web dashboard, and main driver | Rajat Pant |
 
 ---
@@ -28,8 +28,10 @@ main.cpp and the codebase are divided into four core sections across team member
 * Polymorphism: Runtime dispatch through base class pointers.
 * RAII: Modern smart pointers (`std::unique_ptr`) guarantee memory safety and clean destruction.
 
-### 2. Custom Singly Linked List (Owner: Arnav Negi)
-* `UserLinkedList` stores registered hikers using dynamic heap-allocated `UserNode` pointers.
+### 2. Custom Singly Linked Lists (Owner: Arnav Negi)
+* `UserLinkedList`: Stores registered hikers using dynamic heap-allocated `UserNode` pointers.
+* `RescueTeamLinkedList`: Stores rescue response units using dynamic heap-allocated `RescueTeamNode` pointers.
+* `CrossingLinkedList`: Stores hiker checkpoint crossing audit telemetry logs as linked nodes.
 * Provides O(1) appending at tail and clean pointer-based traversal.
 
 ### 3. Graph as Adjacency List (Owner: Vidarbh Dabral)
@@ -45,11 +47,10 @@ std::unordered_map<std::string, std::vector<TrailEdge>>
 * Time complexity: O((V + E) log V).
 * Dynamic hazard bypass: Automatically detects and avoids `CLOSED` trail edges while flagging `CAUTION` segments.
 
-### 5. Facade System, Auto-Tracking and File I/O (Owner: Shorya Negi)
-* `TrailSafetySystem` coordinates between the graph, registered hikers, and rescue stations.
+### 5. Facade System, Auto-Tracking and SOS (Owner: Shorya Negi)
+* `TrailSafetySystem` coordinates between the graph, linked lists of hikers, and rescue stations.
 * Automatic Location Tracking: Updates the hiker's checkpoint as they cross sensors along a planned trek.
 * SOS Emergency Dispatch: Dispatches the closest available team to the hiker's latest verified location.
-* File Persistence: Saves and loads system state to `trail_safety_data.txt` and exports web-ready JSON to `trail_network.json`.
 
 ### 6. Interactive Terminal UI and Web Dashboard (Owner: Rajat Pant)
 * Terminal UI with numeric stream cleansing to prevent infinite loops on invalid input.
@@ -63,27 +64,28 @@ std::unordered_map<std::string, std::vector<TrailEdge>>
 ```text
 .
 |-- include/
-|   |-- Common.hpp            # Time, sleep and infinity definitions
-|   |-- User.hpp              # Abstract base class
-|   |-- Hiker.hpp             # Hiker entity and telemetry history
-|   |-- RescueTeam.hpp        # Rescue unit entity and dispatch status
-|   |-- UserLinkedList.hpp    # Custom Singly Linked List data structure
-|   |-- TrailGraph.hpp        # Adjacency list and Dijkstra header
-|   |-- TrailSafetySystem.hpp # Facade system and auto-tracker
-|   `-- UI.hpp                # Progress bar and terminal menu declarations
+|   |-- Common.hpp               # Time, sleep and infinity definitions
+|   |-- User.hpp                 # Abstract base class
+|   |-- Hiker.hpp                # Hiker entity and CrossingLinkedList history
+|   |-- RescueTeam.hpp           # Rescue unit entity and dispatch status
+|   |-- UserLinkedList.hpp       # Custom Singly Linked List for Hikers
+|   |-- RescueTeamLinkedList.hpp # Custom Singly Linked List for Rescue Teams
+|   |-- TrailGraph.hpp           # Adjacency list and Dijkstra header
+|   |-- TrailSafetySystem.hpp    # Facade system and auto-tracker
+|   `-- UI.hpp                   # Progress bar and terminal menu declarations
 |-- src/
-|   |-- TrailGraph.cpp        # Graph algorithms and hazard bypass
-|   |-- TrailSafetySystem.cpp # System implementation, I/O and SOS
-|   `-- UI.cpp                # UI functions and validation
+|   |-- TrailGraph.cpp           # Graph algorithms and hazard bypass
+|   |-- TrailSafetySystem.cpp    # System implementation and SOS dispatch
+|   `-- UI.cpp                   # UI functions and validation
 |-- web/
-|   `-- index.html            # Interactive visual web dashboard (Canvas + JS)
-|-- main.cpp                  # Application entry point
-|-- build.bat                 # Windows build script
-|-- Makefile                  # GCC build script
-|-- trail_network.json        # Web dashboard network data
-|-- trail_safety_data.txt     # System state persistence file
-|-- .gitignore                # Build artifact exclusions
-`-- README.md                 # Project documentation
+|   `-- index.html               # Interactive visual web dashboard (Canvas + JS)
+|-- main.cpp                     # Application entry point
+|-- build.bat                    # Windows build script
+|-- Makefile                     # GCC build script
+|-- trail_network.json           # Web dashboard network data
+|-- trail_safety_data.txt        # System state persistence file
+|-- .gitignore                   # Build artifact exclusions
+`-- README.md                    # Project documentation
 ```
 
 ---
@@ -147,11 +149,7 @@ Open `web/index.html` in any web browser.
   12. Trail Closure & Hazard Condition Management
   13. Broadcast Emergency Safety Alert to All Hikers
 
-  --- [Persistence & Web Export] ---
-  14. Save System State to Disk
-  15. Load System State from Disk
-  16. Export State to JSON (For Website Dashboard)
-  17. Exit System
+  14. Exit System
 =====================================================================
 ```
 

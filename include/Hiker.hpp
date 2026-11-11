@@ -11,6 +11,75 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <utility>
+
+// Custom Linked List Node for Hiker Checkpoint Crossing Log
+struct CrossingNode {
+    CheckpointCrossing crossing;
+    CrossingNode* next;
+
+    CrossingNode(CheckpointCrossing c) : crossing(std::move(c)), next(nullptr) {}
+};
+
+// Custom Singly Linked List for hiker telemetry audit logs
+class CrossingLinkedList {
+private:
+    CrossingNode* head;
+    CrossingNode* tail;
+    size_t count;
+
+public:
+    CrossingLinkedList() : head(nullptr), tail(nullptr), count(0) {}
+
+    ~CrossingLinkedList() {
+        clear();
+    }
+
+    CrossingLinkedList(const CrossingLinkedList& other) : head(nullptr), tail(nullptr), count(0) {
+        CrossingNode* curr = other.head;
+        while (curr) {
+            append(curr->crossing);
+            curr = curr->next;
+        }
+    }
+
+    CrossingLinkedList& operator=(const CrossingLinkedList& other) {
+        if (this != &other) {
+            clear();
+            CrossingNode* curr = other.head;
+            while (curr) {
+                append(curr->crossing);
+                curr = curr->next;
+            }
+        }
+        return *this;
+    }
+
+    void clear() {
+        while (head) {
+            CrossingNode* temp = head;
+            head = head->next;
+            delete temp;
+        }
+        tail = nullptr;
+        count = 0;
+    }
+
+    void append(const CheckpointCrossing& c) {
+        CrossingNode* newNode = new CrossingNode(c);
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+        count++;
+    }
+
+    CrossingNode* getHead() const { return head; }
+    size_t size() const { return count; }
+    bool empty() const { return count == 0; }
+};
 
 class Hiker : public User {
 private:
@@ -22,7 +91,7 @@ private:
     std::vector<std::string> plannedRoute;
     size_t routeStepIndex;
     double totalDistanceCovered;
-    std::vector<CheckpointCrossing> travelHistory;
+    CrossingLinkedList travelHistory;
 
 public:
     Hiker(std::string id, std::string personName, std::string contact,
@@ -35,8 +104,8 @@ public:
           trekActive(false),
           routeStepIndex(0),
           totalDistanceCovered(0.0) {
-        // Record initial starting checkpoint in history
-        travelHistory.push_back(
+        // Record initial starting checkpoint into custom linked list
+        travelHistory.append(
             CheckpointCrossing(currentCheckpoint, getCurrentTimestamp(), 0.0)
         );
     }
@@ -64,7 +133,7 @@ public:
     const std::vector<std::string>& getPlannedRoute() const { return plannedRoute; }
     size_t getRouteStepIndex() const { return routeStepIndex; }
     double getTotalDistanceCovered() const { return totalDistanceCovered; }
-    const std::vector<CheckpointCrossing>& getTravelHistory() const { return travelHistory; }
+    const CrossingLinkedList& getTravelHistory() const { return travelHistory; }
 
     void setEmergencyContact(const std::string& contact) {
         if (!contact.empty()) emergencyContact = contact;
@@ -104,7 +173,7 @@ public:
         totalDistanceCovered += legDistanceKm;
         crossedName = currentCheckpoint;
 
-        travelHistory.push_back(
+        travelHistory.append(
             CheckpointCrossing(currentCheckpoint, getCurrentTimestamp(), totalDistanceCovered)
         );
 
@@ -127,11 +196,14 @@ public:
                   << std::setw(22) << "Timestamp"
                   << "Total Odometer\n";
         std::cout << std::string(68, '-') << "\n";
-        for (size_t i = 0; i < travelHistory.size(); ++i) {
-            std::cout << std::left << std::setw(6) << (i + 1)
-                      << std::setw(26) << travelHistory[i].checkpointName
-                      << std::setw(22) << travelHistory[i].timestamp
-                      << std::fixed << std::setprecision(2) << travelHistory[i].cumulativeDistanceKm << " km\n";
+        CrossingNode* curr = travelHistory.getHead();
+        int step = 1;
+        while (curr) {
+            std::cout << std::left << std::setw(6) << step++
+                      << std::setw(26) << curr->crossing.checkpointName
+                      << std::setw(22) << curr->crossing.timestamp
+                      << std::fixed << std::setprecision(2) << curr->crossing.cumulativeDistanceKm << " km\n";
+            curr = curr->next;
         }
         std::cout.unsetf(std::ios::fixed);
         std::cout << std::string(68, '-') << "\n";

@@ -9,6 +9,7 @@
 #include "User.hpp"
 #include "Hiker.hpp"
 #include "RescueTeam.hpp"
+#include "RescueTeamLinkedList.hpp"
 #include "TrailGraph.hpp"
 #include "UserLinkedList.hpp"
 #include <vector>
@@ -19,10 +20,10 @@ class TrailSafetySystem {
 private:
     // Core Data Structures:
     // 1. Custom Singly Linked List for registered users (Arnav Negi)
-    // 2. Vector for active rescue units (Arnav Negi)
+    // 2. Custom Singly Linked List for rescue units (Arnav Negi)
     // 3. Adjacency List Graph for checkpoints & trails (Vidarbh Dabral)
     UserLinkedList registeredUsers;
-    std::vector<RescueTeam> rescueTeams;
+    RescueTeamLinkedList rescueTeams;
     TrailGraph trailMap;
 
     void displayRoute(const PathResult& route) const;
