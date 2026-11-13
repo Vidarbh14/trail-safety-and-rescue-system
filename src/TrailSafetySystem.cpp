@@ -587,7 +587,7 @@ void TrailSafetySystem::displaySystemStatus() const {
     }
 
     cout << "\n[SECTION 2: RESCUE & RANGER STATIONS (CUSTOM LINKED LIST)] (Total: "
-         << rescueTeams.size() << ")\n";
+         << rescueTeams.size() << " | Available: " << getAvailableRescueTeamCount() << ")\n";
     if (rescueTeams.empty()) {
         cout << "  No rescue teams on duty.\n";
     } else {
@@ -629,4 +629,20 @@ void TrailSafetySystem::seedInitialDemoData() {
     registeredUsers.append(make_unique<Hiker>(
         "H-102", "Meera Joshi", "+91-91234-56780",
         "+91-91234-11223", "Old Rajpur", "First aid kit equipped"));
+}
+
+size_t TrailSafetySystem::getRegisteredHikerCount() const {
+    return registeredUsers.size();
+}
+
+size_t TrailSafetySystem::getAvailableRescueTeamCount() const {
+    size_t readyCount = 0;
+    RescueTeamNode* curr = rescueTeams.getHead();
+    while (curr) {
+        if (curr->team.getAvailability()) {
+            readyCount++;
+        }
+        curr = curr->next;
+    }
+    return readyCount;
 }

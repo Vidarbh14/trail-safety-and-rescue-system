@@ -71,6 +71,10 @@ public:
 
     void displaySystemStatus() const;
     void seedInitialDemoData();
+
+    // System Telemetry & Statistics
+    size_t getRegisteredHikerCount() const;
+    size_t getAvailableRescueTeamCount() const;
 };
 
 #endif // TRAIL_SAFETY_SYSTEM_HPP
