@@ -113,6 +113,14 @@ size_t TrailGraph::getCheckpointCount() const {
     return adjList.size();
 }
 
+size_t TrailGraph::getTotalTrailCount() const {
+    size_t count = 0;
+    for (const auto& pair : adjList) {
+        count += pair.second.size();
+    }
+    return count;
+}
+
 const unordered_map<string, vector<TrailEdge>>& TrailGraph::getAdjList() const {
     return adjList;
 }

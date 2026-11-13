@@ -68,6 +68,7 @@ public:
 
     bool hasCheckpoint(const std::string& name) const;
     size_t getCheckpointCount() const;
+    size_t getTotalTrailCount() const;
 
     const std::unordered_map<std::string, std::vector<TrailEdge>>& getAdjList() const;
     const std::vector<TrailEdge>& getNeighbors(const std::string& checkpoint) const;
