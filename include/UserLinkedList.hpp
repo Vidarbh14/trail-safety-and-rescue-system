@@ -77,6 +77,11 @@ public:
         return nullptr;
     }
 
+    // Fast membership verification for hiker registration guards
+    bool containsHiker(const std::string& id) const {
+        return findHikerById(id) != nullptr;
+    }
+
     UserNode* getHead() const { return head; }
     size_t size() const { return count; }
     bool empty() const { return count == 0; }

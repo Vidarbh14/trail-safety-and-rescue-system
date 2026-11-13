@@ -127,6 +127,9 @@ public:
 
     std::string getEmergencyContact() const { return emergencyContact; }
     std::string getMedicalNotes() const { return medicalNotes; }
+    bool hasMedicalNotes() const {
+        return !medicalNotes.empty() && medicalNotes != "None" && medicalNotes != "none";
+    }
     std::string getCurrentCheckpoint() const { return currentCheckpoint; }
     std::string getTargetDestination() const { return targetDestination; }
     bool isTrekActive() const { return trekActive; }
