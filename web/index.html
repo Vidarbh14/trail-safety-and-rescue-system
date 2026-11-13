@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏔️ Mountain Trail Safety & Rescue Management System</title>
+  <title>Mountain Trail Safety and Rescue Management System</title>
   <style>
     :root {
       --bg-dark: #0f172a;
@@ -64,13 +64,13 @@
 
   <header>
     <div>
-      <h1>🏔️ Trail Safety & Mountain Rescue System</h1>
+      <h1>Trail Safety and Mountain Rescue System</h1>
       <div class="subtitle">B.Tech 3rd Semester PBL Project - Graph & Dijkstra Live Web Dashboard</div>
     </div>
     <div style="display: flex; gap: 10px; align-items: center;">
       <span class="badge">C++ Backend Connected</span>
-      <button class="btn btn-outline" onclick="loadFromFilePrompt()">📂 Load JSON File</button>
-      <button class="btn" onclick="resetToDemo()">↺ Reset Demo</button>
+      <button class="btn btn-outline" onclick="loadFromFilePrompt()">Load JSON File</button>
+      <button class="btn" onclick="resetToDemo()">Reset Demo</button>
     </div>
   </header>
 
@@ -97,20 +97,20 @@
     <!-- Left Column: Graph Visualizer -->
     <div>
       <div class="card">
-        <h2>🗺️ Interactive Foothill Trail Network</h2>
+        <h2>Interactive Foothill Trail Network</h2>
         <canvas id="trailCanvas" width="800" height="500"></canvas>
         <div style="display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-muted); margin-top: 12px; justify-content: center; flex-wrap: wrap;">
-          <span>🟢 Open Trail</span>
-          <span>🟡 Caution</span>
-          <span>🔴 Closed</span>
-          <span>🔵 Hiker Location</span>
-          <span>🚑 Rescue Base</span>
-          <span>⚡ Shortest Path</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:2px;"></span>Open Trail</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:#eab308;border-radius:2px;"></span>Caution</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:#ef4444;border-radius:2px;"></span>Closed</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:#0284c7;border-radius:50%;"></span>Hiker Location</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:#16a34a;border-radius:50%;"></span>Rescue Base</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;"><span style="display:inline-block;width:12px;height:3px;background:#a855f7;"></span>Shortest Path</span>
         </div>
       </div>
 
       <div class="card">
-        <h2>📜 Real-Time System Telemetry & Logs</h2>
+        <h2>Real-Time System Telemetry and Logs</h2>
         <div id="logBox">[System Ready]: Foothill trail network loaded. Monitoring telemetry sensors...</div>
       </div>
     </div>
@@ -118,7 +118,7 @@
     <!-- Right Column: Interactive Controls -->
     <div>
       <div class="card">
-        <h2>🧭 Dijkstra Shortest Route</h2>
+        <h2>Dijkstra Shortest Route</h2>
         <div class="form-group">
           <label>Starting Checkpoint</label>
           <select id="selectStart"></select>
@@ -131,7 +131,7 @@
       </div>
 
       <div class="card">
-        <h2>🛰️ Automatic Tracking Simulation</h2>
+        <h2>Automatic Tracking Simulation</h2>
         <div class="form-group">
           <label>Select Hiker to Track</label>
           <select id="selectHikerTrack"></select>
@@ -140,25 +140,25 @@
           <label>Destination Checkpoint</label>
           <select id="selectTrackDest"></select>
         </div>
-        <button class="btn" style="width: 100%;" onclick="simulateLiveTrek()">▶ Start Auto-Tracking Simulation</button>
+        <button class="btn" style="width: 100%;" onclick="simulateLiveTrek()">Start Auto-Tracking Simulation</button>
       </div>
 
       <div class="card">
-        <h2>🚨 SOS Emergency Dispatch</h2>
+        <h2>SOS Emergency Dispatch</h2>
         <div class="form-group">
           <label>Hiker in Distress</label>
           <select id="selectHikerSOS"></select>
         </div>
-        <button class="btn btn-danger" style="width: 100%;" onclick="triggerSOS()">🚨 Send Emergency SOS</button>
+        <button class="btn btn-danger" style="width: 100%;" onclick="triggerSOS()">Send Emergency SOS</button>
       </div>
 
       <div class="card">
-        <h2>🧑‍🤝‍🧑 Active Hikers</h2>
+        <h2>Active Hikers</h2>
         <ul class="item-list" id="hikersList"></ul>
       </div>
 
       <div class="card">
-        <h2>🚑 Rescue Stations</h2>
+        <h2>Rescue Stations</h2>
         <ul class="item-list" id="teamsList"></ul>
       </div>
     </div>
@@ -294,7 +294,7 @@
           ctx.stroke();
           ctx.fillStyle = "#38bdf8";
           ctx.font = "bold 10px sans-serif";
-          ctx.fillText(`🧑 ${h.name.split(' ')[0]}`, coord.x - 20, coord.y + 26);
+          ctx.fillText(h.name.split(' ')[0], coord.x - 20, coord.y + 26);
         }
       });
 
@@ -311,7 +311,7 @@
           ctx.stroke();
           ctx.fillStyle = "#86efac";
           ctx.font = "bold 10px sans-serif";
-          ctx.fillText(`🚑 ${r.id}`, coord.x + 8, coord.y + 26);
+          ctx.fillText(r.id, coord.x + 8, coord.y + 26);
         }
       });
     }
@@ -348,7 +348,7 @@
       hList.innerHTML = networkData.hikers.map(h => `
         <li class="list-item">
           <div>
-            <div class="item-title">🧑 ${h.name} (${h.id})</div>
+            <div class="item-title">${h.name} (${h.id})</div>
             <div class="item-sub">Location: <strong>${h.currentCheckpoint}</strong> | Total: ${h.totalDistanceKm.toFixed(1)} km</div>
           </div>
           <span class="badge">Stationed</span>
@@ -360,7 +360,7 @@
       tList.innerHTML = networkData.rescueTeams.map(r => `
         <li class="list-item">
           <div>
-            <div class="item-title">🚑 ${r.id} (${r.leader})</div>
+            <div class="item-title">${r.id} (${r.leader})</div>
             <div class="item-sub">Base Camp: <strong>${r.base}</strong></div>
           </div>
           <span class="${r.isAvailable ? 'tag-open' : 'tag-closed'}">${r.isAvailable ? 'AVAILABLE' : 'DISPATCHED'}</span>
@@ -433,7 +433,7 @@
         activeHighlightPath = [];
       } else {
         activeHighlightPath = result.path;
-        log(`Dijkstra Route: ${result.path.join(" ➔ ")} (${result.totalDistance.toFixed(2)} km)`);
+        log(`Dijkstra Route: ${result.path.join(" -> ")} (${result.totalDistance.toFixed(2)} km)`);
       }
       drawNetwork();
     }
@@ -475,7 +475,7 @@
       const hiker = networkData.hikers.find(h => h.id === hikerId);
       if (!hiker) return;
 
-      log(`🚨 [SOS RECEIVED]: Emergency alert for ${hiker.name} at verified location: ${hiker.currentCheckpoint}`);
+      log(`[SOS RECEIVED]: Emergency alert for ${hiker.name} at verified location: ${hiker.currentCheckpoint}`);
 
       // Find nearest available rescue team using Dijkstra
       let bestTeam = null;
@@ -494,7 +494,7 @@
       if (bestTeam) {
         bestTeam.isAvailable = false;
         activeHighlightPath = bestPath;
-        log(`🚑 [DISPATCHING]: Unit ${bestTeam.id} from ${bestTeam.base} (${bestDist.toFixed(2)} km away via ${bestPath.join(" -> ")})`);
+        log(`[DISPATCHING]: Unit ${bestTeam.id} from ${bestTeam.base} (${bestDist.toFixed(2)} km away via ${bestPath.join(" -> ")})`);
         populateUI();
       } else {
         alert("No available rescue team could reach the hiker!");

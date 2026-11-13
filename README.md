@@ -64,28 +64,28 @@ std::unordered_map<std::string, std::vector<TrailEdge>>
 ```text
 .
 |-- include/
-|   |-- Common.hpp               # Time, sleep and infinity definitions
-|   |-- User.hpp                 # Abstract base class
-|   |-- Hiker.hpp                # Hiker entity and CrossingLinkedList history
-|   |-- RescueTeam.hpp           # Rescue unit entity and dispatch status
-|   |-- UserLinkedList.hpp       # Custom Singly Linked List for Hikers
-|   |-- RescueTeamLinkedList.hpp # Custom Singly Linked List for Rescue Teams
-|   |-- TrailGraph.hpp           # Adjacency list and Dijkstra header
-|   |-- TrailSafetySystem.hpp    # Facade system and auto-tracker
-|   `-- UI.hpp                   # Progress bar and terminal menu declarations
+| |-- Common.hpp # Time, sleep and infinity definitions
+| |-- User.hpp # Abstract base class
+| |-- Hiker.hpp # Hiker entity and CrossingLinkedList history
+| |-- RescueTeam.hpp # Rescue unit entity and dispatch status
+| |-- UserLinkedList.hpp # Custom Singly Linked List for Hikers
+| |-- RescueTeamLinkedList.hpp # Custom Singly Linked List for Rescue Teams
+| |-- TrailGraph.hpp # Adjacency list and Dijkstra header
+| |-- TrailSafetySystem.hpp # Facade system and auto-tracker
+| `-- UI.hpp # Progress bar and terminal menu declarations
 |-- src/
-|   |-- TrailGraph.cpp           # Graph algorithms and hazard bypass
-|   |-- TrailSafetySystem.cpp    # System implementation and SOS dispatch
-|   `-- UI.cpp                   # UI functions and validation
+| |-- TrailGraph.cpp # Graph algorithms and hazard bypass
+| |-- TrailSafetySystem.cpp # System implementation and SOS dispatch
+| `-- UI.cpp # UI functions and validation
 |-- web/
-|   `-- index.html               # Interactive visual web dashboard (Canvas + JS)
-|-- main.cpp                     # Application entry point
-|-- build.bat                    # Windows build script
-|-- Makefile                     # GCC build script
-|-- trail_network.json           # Web dashboard network data
-|-- trail_safety_data.txt        # System state persistence file
-|-- .gitignore                   # Build artifact exclusions
-`-- README.md                    # Project documentation
+| `-- index.html # Interactive visual web dashboard (Canvas + JS)
+|-- main.cpp # Application entry point
+|-- build.bat # Windows build script
+|-- Makefile # GCC build script
+|-- trail_network.json # Web dashboard network data
+|-- trail_safety_data.txt # System state persistence file
+|-- .gitignore # Build artifact exclusions
+`-- README.md # Project documentation
 ```
 
 ---
@@ -130,26 +130,26 @@ Open `web/index.html` in any web browser.
 
 ```text
 ============================= MAIN MENU =============================
-  --- [Setup & Records] ---
-  1.  Register a Hiker
-  2.  Add a Trail Connection (Graph Edge)
-  3.  View Full System Status (Hikers, Units, Network Map)
+ --- [Setup & Records] ---
+ 1. Register a Hiker
+ 2. Add a Trail Connection (Graph Edge)
+ 3. View Full System Status (Hikers, Units, Network Map)
 
-  --- [Navigation & Tracking] ---
-  4.  Find Shortest Route (Dijkstra Algorithm)
-  5.  Manual Hiker Location Update (Direct Check-in)
-  6.  Plan & Start Hiker Trek (Route Assignment)
-  7.  Simulate Auto Location Tracking (Live Checkpoint Crossings)
-  8.  Ping Next Checkpoint Crossing (Single Sensor Event)
-  9.  View Hiker Checkpoint Crossing Log & Travel History
+ --- [Navigation & Tracking] ---
+ 4. Find Shortest Route (Dijkstra Algorithm)
+ 5. Manual Hiker Location Update (Direct Check-in)
+ 6. Plan & Start Hiker Trek (Route Assignment)
+ 7. Simulate Auto Location Tracking (Live Checkpoint Crossings)
+ 8. Ping Next Checkpoint Crossing (Single Sensor Event)
+ 9. View Hiker Checkpoint Crossing Log & Travel History
 
-  --- [Safety, Hazards & SOS] ---
-  10. SOS - Dispatch Nearest Rescue Team
-  11. Recall a Rescue Team to Base
-  12. Trail Closure & Hazard Condition Management
-  13. Broadcast Emergency Safety Alert to All Hikers
+ --- [Safety, Hazards & SOS] ---
+ 10. SOS - Dispatch Nearest Rescue Team
+ 11. Recall a Rescue Team to Base
+ 12. Trail Closure & Hazard Condition Management
+ 13. Broadcast Emergency Safety Alert to All Hikers
 
-  14. Exit System
+ 14. Exit System
 =====================================================================
 ```
 
