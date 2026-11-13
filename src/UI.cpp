@@ -64,5 +64,6 @@ void printMenu() {
     cout << "  13. Broadcast Emergency Safety Alert to All Hikers\n";
     cout << "\n  14. Exit System\n";
     cout << "=====================================================================\n";
+    cout << "  [Quick Tip: Option 3 for full status | Option 10 for SOS dispatch]\n";
     cout << "Enter selection (1-14): ";
 }
